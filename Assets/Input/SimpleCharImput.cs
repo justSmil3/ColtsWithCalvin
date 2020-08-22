@@ -33,6 +33,14 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""fd3edce2-58f6-4f32-b98b-36de2a8bb61e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -101,6 +109,17 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""70932a64-927a-40a8-9e0d-6570bc6d3400"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -121,6 +140,14 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""a887bf47-7e4e-4562-9763-37644964d35d"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""4adb9ed5-5981-4cb3-93fa-d4a043f408bb"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -158,6 +185,17 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""53c1b924-b084-468d-a43a-5618429c0a71"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -168,10 +206,12 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
         m_PlayerOne = asset.FindActionMap("PlayerOne", throwIfNotFound: true);
         m_PlayerOne_Move = m_PlayerOne.FindAction("Move", throwIfNotFound: true);
         m_PlayerOne_Jump = m_PlayerOne.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerOne_CameraMove = m_PlayerOne.FindAction("CameraMove", throwIfNotFound: true);
         // PlayerTwo
         m_PlayerTwo = asset.FindActionMap("PlayerTwo", throwIfNotFound: true);
         m_PlayerTwo_Move = m_PlayerTwo.FindAction("Move", throwIfNotFound: true);
         m_PlayerTwo_Jump = m_PlayerTwo.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerTwo_CameraMove = m_PlayerTwo.FindAction("CameraMove", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -223,12 +263,14 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
     private IPlayerOneActions m_PlayerOneActionsCallbackInterface;
     private readonly InputAction m_PlayerOne_Move;
     private readonly InputAction m_PlayerOne_Jump;
+    private readonly InputAction m_PlayerOne_CameraMove;
     public struct PlayerOneActions
     {
         private @SimpleCharImput m_Wrapper;
         public PlayerOneActions(@SimpleCharImput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_PlayerOne_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerOne_Jump;
+        public InputAction @CameraMove => m_Wrapper.m_PlayerOne_CameraMove;
         public InputActionMap Get() { return m_Wrapper.m_PlayerOne; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -244,6 +286,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnJump;
+                @CameraMove.started -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnCameraMove;
+                @CameraMove.performed -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnCameraMove;
+                @CameraMove.canceled -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnCameraMove;
             }
             m_Wrapper.m_PlayerOneActionsCallbackInterface = instance;
             if (instance != null)
@@ -254,6 +299,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @CameraMove.started += instance.OnCameraMove;
+                @CameraMove.performed += instance.OnCameraMove;
+                @CameraMove.canceled += instance.OnCameraMove;
             }
         }
     }
@@ -264,12 +312,14 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
     private IPlayerTwoActions m_PlayerTwoActionsCallbackInterface;
     private readonly InputAction m_PlayerTwo_Move;
     private readonly InputAction m_PlayerTwo_Jump;
+    private readonly InputAction m_PlayerTwo_CameraMove;
     public struct PlayerTwoActions
     {
         private @SimpleCharImput m_Wrapper;
         public PlayerTwoActions(@SimpleCharImput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_PlayerTwo_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerTwo_Jump;
+        public InputAction @CameraMove => m_Wrapper.m_PlayerTwo_CameraMove;
         public InputActionMap Get() { return m_Wrapper.m_PlayerTwo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -285,6 +335,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnJump;
+                @CameraMove.started -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnCameraMove;
+                @CameraMove.performed -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnCameraMove;
+                @CameraMove.canceled -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnCameraMove;
             }
             m_Wrapper.m_PlayerTwoActionsCallbackInterface = instance;
             if (instance != null)
@@ -295,6 +348,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @CameraMove.started += instance.OnCameraMove;
+                @CameraMove.performed += instance.OnCameraMove;
+                @CameraMove.canceled += instance.OnCameraMove;
             }
         }
     }
@@ -303,10 +359,12 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnCameraMove(InputAction.CallbackContext context);
     }
     public interface IPlayerTwoActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnCameraMove(InputAction.CallbackContext context);
     }
 }
