@@ -14,6 +14,7 @@ public enum PlayerChoise
 public class SimpleCharControll : MonoBehaviour
 {
     private Rigidbody rb;
+    private ObiRigidbody orb; 
     public float fallMultiplyer = 2.5f, lowJumpMultiplyer = 2f, jumpForce = 10, speed = 10, cameraRotationSpeed = 15f, maxAcceleration = 10f;
 
     SimpleCharImput controlls;
@@ -28,6 +29,8 @@ public class SimpleCharControll : MonoBehaviour
     {
         if (!TryGetComponent<Rigidbody>(out rb))
             Destroy(this);
+        if (!TryGetComponent<ObiRigidbody>(out orb))
+            Destroy(this);
         controlls = new SimpleCharImput();
         switch (p)
         {
@@ -39,6 +42,15 @@ public class SimpleCharControll : MonoBehaviour
                 controlls.PlayerOne.Move.canceled += ctx => moveData = Vector2.zero; 
                 controlls.PlayerOne.CameraMove.performed += ctx => cameraMoveData = ctx.ReadValue<Vector2>();
                 controlls.PlayerOne.CameraMove.canceled += ctx => cameraMoveData = Vector2.zero;
+                // handle kinetics
+                controlls.PlayerTwo.Jump.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerTwo.Move.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerOne.Jump.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerOne.Move.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerTwo.Jump.canceled += ctx => orb.kinematicForParticles = true;
+                controlls.PlayerTwo.Move.canceled += ctx => orb.kinematicForParticles = true;
+                controlls.PlayerOne.Jump.canceled += ctx => orb.kinematicForParticles = true;
+                controlls.PlayerOne.Move.canceled += ctx => orb.kinematicForParticles = true;
                 break;
             case PlayerChoise.PlayerTwo:
                 controlls.PlayerTwo.Jump.performed += ctx => inJump = true;
@@ -48,6 +60,15 @@ public class SimpleCharControll : MonoBehaviour
                 controlls.PlayerTwo.Move.canceled += ctx => moveData = Vector2.zero;
                 controlls.PlayerTwo.CameraMove.performed += ctx => cameraMoveData = ctx.ReadValue<Vector2>();
                 controlls.PlayerTwo.CameraMove.canceled += ctx => cameraMoveData = Vector2.zero;
+                // handle kinetics
+                controlls.PlayerTwo.Jump.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerTwo.Move.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerOne.Jump.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerOne.Move.performed += ctx => orb.kinematicForParticles = false;
+                controlls.PlayerTwo.Jump.canceled += ctx => orb.kinematicForParticles = true;
+                controlls.PlayerTwo.Move.canceled += ctx => orb.kinematicForParticles = true;
+                controlls.PlayerOne.Jump.canceled += ctx => orb.kinematicForParticles = true;
+                controlls.PlayerOne.Move.canceled += ctx => orb.kinematicForParticles = true;
                 break;
             default:
                 break;
@@ -107,8 +128,10 @@ public class SimpleCharControll : MonoBehaviour
         Vector3 sideMovement = transform.forward * movementVelocity.y;
         Vector3 movement = forwardMovement + sideMovement;
         Debug.LogError(movement);
-        if (rb.velocity.magnitude <= maxAcceleration)
+        if (rb.velocity.magnitude <= maxAcceleration && movement != Vector3.zero)
+        {
             rb.velocity += movement;
+        }
     }
 
     void CameraMove()
