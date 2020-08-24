@@ -28,6 +28,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "ChangeRope",
+                    "type": "Button",
+                    "id": "5cfabe12-6043-4e07-ba62-06debee8bd25",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -107,6 +115,28 @@
                     "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "98cc8edd-88d6-48a1-9102-a1fe0731931d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeRope",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d6fe88ea-9d98-4a38-8164-110fe3698321",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeRope",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -135,6 +165,14 @@
                     "type": "Value",
                     "id": "4adb9ed5-5981-4cb3-93fa-d4a043f408bb",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ChangeRope",
+                    "type": "Button",
+                    "id": "6413f965-741f-40b3-a296-223a2db7de62",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -181,6 +219,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CameraMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0ef8bed1-b3ff-4014-a96a-add3d87fbf95",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeRope",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

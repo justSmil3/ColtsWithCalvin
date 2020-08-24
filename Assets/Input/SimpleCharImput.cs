@@ -41,6 +41,14 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""ChangeRope"",
+                    ""type"": ""Button"",
+                    ""id"": ""5cfabe12-6043-4e07-ba62-06debee8bd25"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -120,6 +128,28 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""98cc8edd-88d6-48a1-9102-a1fe0731931d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeRope"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d6fe88ea-9d98-4a38-8164-110fe3698321"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeRope"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -148,6 +178,14 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""4adb9ed5-5981-4cb3-93fa-d4a043f408bb"",
                     ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""ChangeRope"",
+                    ""type"": ""Button"",
+                    ""id"": ""6413f965-741f-40b3-a296-223a2db7de62"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -196,6 +234,17 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                     ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0ef8bed1-b3ff-4014-a96a-add3d87fbf95"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeRope"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -207,11 +256,13 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
         m_PlayerOne_Move = m_PlayerOne.FindAction("Move", throwIfNotFound: true);
         m_PlayerOne_Jump = m_PlayerOne.FindAction("Jump", throwIfNotFound: true);
         m_PlayerOne_CameraMove = m_PlayerOne.FindAction("CameraMove", throwIfNotFound: true);
+        m_PlayerOne_ChangeRope = m_PlayerOne.FindAction("ChangeRope", throwIfNotFound: true);
         // PlayerTwo
         m_PlayerTwo = asset.FindActionMap("PlayerTwo", throwIfNotFound: true);
         m_PlayerTwo_Move = m_PlayerTwo.FindAction("Move", throwIfNotFound: true);
         m_PlayerTwo_Jump = m_PlayerTwo.FindAction("Jump", throwIfNotFound: true);
         m_PlayerTwo_CameraMove = m_PlayerTwo.FindAction("CameraMove", throwIfNotFound: true);
+        m_PlayerTwo_ChangeRope = m_PlayerTwo.FindAction("ChangeRope", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -264,6 +315,7 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerOne_Move;
     private readonly InputAction m_PlayerOne_Jump;
     private readonly InputAction m_PlayerOne_CameraMove;
+    private readonly InputAction m_PlayerOne_ChangeRope;
     public struct PlayerOneActions
     {
         private @SimpleCharImput m_Wrapper;
@@ -271,6 +323,7 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_PlayerOne_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerOne_Jump;
         public InputAction @CameraMove => m_Wrapper.m_PlayerOne_CameraMove;
+        public InputAction @ChangeRope => m_Wrapper.m_PlayerOne_ChangeRope;
         public InputActionMap Get() { return m_Wrapper.m_PlayerOne; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -289,6 +342,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @CameraMove.started -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnCameraMove;
                 @CameraMove.performed -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnCameraMove;
                 @CameraMove.canceled -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnCameraMove;
+                @ChangeRope.started -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnChangeRope;
+                @ChangeRope.performed -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnChangeRope;
+                @ChangeRope.canceled -= m_Wrapper.m_PlayerOneActionsCallbackInterface.OnChangeRope;
             }
             m_Wrapper.m_PlayerOneActionsCallbackInterface = instance;
             if (instance != null)
@@ -302,6 +358,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @CameraMove.started += instance.OnCameraMove;
                 @CameraMove.performed += instance.OnCameraMove;
                 @CameraMove.canceled += instance.OnCameraMove;
+                @ChangeRope.started += instance.OnChangeRope;
+                @ChangeRope.performed += instance.OnChangeRope;
+                @ChangeRope.canceled += instance.OnChangeRope;
             }
         }
     }
@@ -313,6 +372,7 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerTwo_Move;
     private readonly InputAction m_PlayerTwo_Jump;
     private readonly InputAction m_PlayerTwo_CameraMove;
+    private readonly InputAction m_PlayerTwo_ChangeRope;
     public struct PlayerTwoActions
     {
         private @SimpleCharImput m_Wrapper;
@@ -320,6 +380,7 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_PlayerTwo_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerTwo_Jump;
         public InputAction @CameraMove => m_Wrapper.m_PlayerTwo_CameraMove;
+        public InputAction @ChangeRope => m_Wrapper.m_PlayerTwo_ChangeRope;
         public InputActionMap Get() { return m_Wrapper.m_PlayerTwo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -338,6 +399,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @CameraMove.started -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnCameraMove;
                 @CameraMove.performed -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnCameraMove;
                 @CameraMove.canceled -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnCameraMove;
+                @ChangeRope.started -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnChangeRope;
+                @ChangeRope.performed -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnChangeRope;
+                @ChangeRope.canceled -= m_Wrapper.m_PlayerTwoActionsCallbackInterface.OnChangeRope;
             }
             m_Wrapper.m_PlayerTwoActionsCallbackInterface = instance;
             if (instance != null)
@@ -351,6 +415,9 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
                 @CameraMove.started += instance.OnCameraMove;
                 @CameraMove.performed += instance.OnCameraMove;
                 @CameraMove.canceled += instance.OnCameraMove;
+                @ChangeRope.started += instance.OnChangeRope;
+                @ChangeRope.performed += instance.OnChangeRope;
+                @ChangeRope.canceled += instance.OnChangeRope;
             }
         }
     }
@@ -360,11 +427,13 @@ public class @SimpleCharImput : IInputActionCollection, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnCameraMove(InputAction.CallbackContext context);
+        void OnChangeRope(InputAction.CallbackContext context);
     }
     public interface IPlayerTwoActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnCameraMove(InputAction.CallbackContext context);
+        void OnChangeRope(InputAction.CallbackContext context);
     }
 }
