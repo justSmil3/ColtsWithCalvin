@@ -1,0 +1,191 @@
+{
+    "name": "PlayerControlls",
+    "maps": [
+        {
+            "name": "PlayerOneControlls",
+            "id": "8b0cdef7-c0c8-43f4-b19b-e223c36a6fd1",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "72f6aff3-28a2-42ca-b7e8-463177d3ff74",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "a512d1a2-8215-4ef5-9248-d0d3dd895d00",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "InitiateRope",
+                    "type": "Button",
+                    "id": "a05b552f-9241-4953-bc02-1f5f1c822a92",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "2D Vector",
+                    "id": "fbb00275-d79d-42f4-83eb-4eb44eea9c6e",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "0ec2d1ed-7f1e-405e-af9f-5a117a43ca64",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "528fcf27-d69c-4440-9cf2-c36911cba1cf",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "9bb00440-f9b7-4de8-a9a8-45e9b9c82206",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "80b229d0-b2e5-4eb3-9885-f65bbef75837",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "2867ca66-a6ae-4744-a07c-dfb4b05d7e7f",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e4854db-ae85-4165-9721-623b150653f5",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InitiateRope",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "PlayerTwoControlls",
+            "id": "981ca7de-5f66-40de-8a5d-b9ef8105574a",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "ca50870e-91c3-4f19-b093-ac4a5ab1942f",
+                    "expectedControlType": "Stick",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "4f947265-6ef9-4c67-a186-cf085a176e70",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "InitiateRope",
+                    "type": "Button",
+                    "id": "9a3ba6d3-9f6c-4879-9495-8d4cec675674",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4d691f31-5dea-4e8f-8edf-9c02069ca5fc",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9cc8624a-7cab-47b2-b297-f0c894b91690",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "56100d89-8be6-4fd9-a15c-bc06aa803837",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InitiateRope",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6a715e6d-af2b-45f1-adcd-e7d4f9b7010f",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InitiateRope",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

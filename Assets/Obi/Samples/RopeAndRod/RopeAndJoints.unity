@@ -121,7 +121,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!43 &95777633
+--- !u!43 &34623029
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -624,7 +624,7 @@ MonoBehaviour:
   accurateContacts: 0
   useDistanceFields: 0
   distanceField: {fileID: 0}
---- !u!43 &764965583
+--- !u!43 &648930719
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1506,7 +1506,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1201406215}
-  m_Mesh: {fileID: 95777633}
+  m_Mesh: {fileID: 34623029}
 --- !u!114 &1201406222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1838,7 +1838,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1295941522}
-  m_Mesh: {fileID: 764965583}
+  m_Mesh: {fileID: 648930719}
 --- !u!114 &1295941528
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -527,7 +527,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582899616}
   m_CullTransparentMesh: 0
---- !u!43 &764965583
+--- !u!43 &648930719
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1171,7 +1171,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346965641}
-  m_Mesh: {fileID: 764965583}
+  m_Mesh: {fileID: 648930719}
 --- !u!114 &1346965646
 MonoBehaviour:
   m_ObjectHideFlags: 0
