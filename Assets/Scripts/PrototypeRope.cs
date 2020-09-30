@@ -1,9 +1,11 @@
 ﻿using SplineMesh;
+using System.Data;
+using System.Xml.Serialization;
 using UnityEngine;
 public class PrototypeRope : MonoBehaviour
 {
     [SerializeField]
-    private GameObject Instanciator, Target, ropePrefab;
+    private GameObject Instanciator, Target;
     private PlayerControlls controlls;
 
 
@@ -13,9 +15,10 @@ public class PrototypeRope : MonoBehaviour
     public float stretchamount = 1f;
     public int accuracy = 50;
     public float gravitationMultiplyer = 1;
+    public float ropeMass = 1;
     [Range(0, 10)]
     public float bounce = 2;
-    public int PhysicsLayer = 8;
+    public LayerMask PhysicsLayer;
 
     [UnityEngine.SerializeField]
     Segment[] segments;
@@ -81,7 +84,6 @@ public class PrototypeRope : MonoBehaviour
             //VerletSimulation();
             if (segments.Length == 0) return;
             sim();
-            AlignSplineMesh();
             ConstrainPlayerPosition();
         }
     }
@@ -169,8 +171,9 @@ public class PrototypeRope : MonoBehaviour
 
                 Vector3 force = fSpringTwo + fGravity - fSpringOne;
 
-                velocity = velocity + force * Time.deltaTime;
+                velocity = velocity + force * Time.deltaTime + data.veloChange * Time.deltaTime;
                 data.velocity = velocity;
+                data.veloChange = Vector3.zero;
 
                 virtualSegments[i] = data;
             }
@@ -189,31 +192,43 @@ public class PrototypeRope : MonoBehaviour
                     Vector3 vy = new Vector3(0f, data.velocity.y, 0f);
                     Vector3 vz = new Vector3(0f, 0f, data.velocity.z);
                     //does not quite work yet
-                    if (!Physics.Raycast(tempPosition, vx.normalized, vx.magnitude * 2 + pointRadius/*, PhysicsLayer*/))
+                    if (!Physics.Raycast(tempPosition, vx.normalized, out RaycastHit hit, vx.magnitude * 2 + pointRadius, PhysicsLayer))
                     {
                         addedForce += vx;
                         Debug.DrawRay(tempPosition, vx, Color.yellow);
                     }
                     else
                     { 
+                        if(hit.rigidbody != null)
+                        {
+                            ApplyRopeCollision(hit.rigidbody, data);
+                        }
                         Debug.DrawRay(tempPosition, vx, Color.red); 
                     }
-                    if (!Physics.Raycast(tempPosition, vy.normalized, vy.magnitude * 2 + pointRadius/*, PhysicsLayer*/))
+                    if (!Physics.Raycast(tempPosition, vy.normalized, out RaycastHit hit2, vy.magnitude * 2 + pointRadius, PhysicsLayer))
                     {
                         addedForce += vy;
                         Debug.DrawRay(tempPosition, vy, Color.green);
                     }
                     else
                     {
+                        if (hit2.rigidbody != null)
+                        {
+                            ApplyRopeCollision(hit2.rigidbody, data);
+                        }
                         Debug.DrawRay(tempPosition, vx, Color.red);
                     }
-                    if (!Physics.Raycast(tempPosition, vz.normalized, vz.magnitude * 2 + pointRadius/*, PhysicsLayer*/))
+                    if (!Physics.Raycast(tempPosition, vz.normalized, out RaycastHit hit3, vz.magnitude * 2 + pointRadius, PhysicsLayer))
                     {
                         addedForce += vz;
                         Debug.DrawRay(tempPosition, vz, Color.blue);
                     }
                     else
                     {
+                        if (hit3.rigidbody != null)
+                        {
+                            ApplyRopeCollision(hit3.rigidbody, data);
+                        }
                         Debug.DrawRay(tempPosition, vx, Color.red);
                     }
                     tempPosition += addedForce * Time.deltaTime;
@@ -242,15 +257,12 @@ public class PrototypeRope : MonoBehaviour
 
     }
 
-    private GameObject rope;
-    public int stepcount = 5;
     public void InstantiateRope(GameObject a, GameObject b)
     {
         // WIP make the rope change system somehow different 
 
         if (segments.Length > 0)
         {
-            Destroy(rope);
             foreach (Segment x in segments)
             {
                 Destroy(x.collider);
@@ -275,12 +287,6 @@ public class PrototypeRope : MonoBehaviour
             }
             segments = new Segment[numberOfPoints];
 
-            rope = GameObject.Instantiate(ropePrefab);
-            rope.transform.position = Vector3.zero;
-            Spline spline = rope.GetComponent<Spline>();
-            while (spline.nodes.Count < (numberOfPoints / stepcount) + 1)
-                spline.AddNode(new SplineNode(Vector3.zero, Vector3.forward));
-
             for (int i = 0; i < numberOfPoints; i++)
             {
                 Vector3 pos = Instanciator.transform.position;
@@ -295,7 +301,9 @@ public class PrototypeRope : MonoBehaviour
                 rb.useGravity = false;
                 rb.drag = 10 - bounce;
                 col.radius = pointRadius;
-                temp.layer = PhysicsLayer;
+                col.enabled = false;
+                //make a new variable for this
+                temp.layer = 8;
                 segments[i] = new Segment
                 {
                     position = pos,
@@ -304,25 +312,41 @@ public class PrototypeRope : MonoBehaviour
                     collider = temp
                 };
             }
-            AlignSplineMesh();
         }
     }
 
-    public void AlignSplineMesh()
+    //this code does not work XD 
+    public void ApplyRopeCollision(Rigidbody other, Segment data)
     {
-        if (rope == null) return;
-        Spline spline = rope.GetComponent<Spline>();
+        float dt = Time.deltaTime;
+        float m1 = ropeMass;
+        float m2 = other.mass;
+        Vector3 v1 = data.velocity;
+        Vector3 v2 = other.velocity * dt;
 
-        int x = 0;
-        for(int i = 0; i < segments.Length-1; i += stepcount)
-        {
-            spline.nodes[x].Position = segments[i].collider.transform.position;
-            spline.nodes[x].Direction = segments[i + 1].collider.transform.position - segments[i].collider.transform.position;
-            x++;
-        }
-        int j = segments.Length - 1;
-        spline.nodes[spline.nodes.Count-1].Position = Target.transform.position;
-        spline.nodes[spline.nodes.Count-1].Direction = Target.transform.position - segments[j-1].collider.transform.position;
+        // calculate Impact
+        float F1 = -m2 * v2.magnitude;
+        float F2 = -m1 * v1.magnitude;
+
+        // calculate direction 
+        v1.Normalize();
+        v2.Normalize();
+
+        float a = Vector3.Dot(v1, v2) * Vector3.Angle(v1, v2);
+        Vector3 d1 = Vector3.RotateTowards(v2, v1, a, 1);
+        Vector3 d2 = Vector3.RotateTowards(v1, v2, a, 1);
+
+        //calculate new momentum
+        //these somehow return a zero vector
+        Vector3 p1 = d1 * F1;
+        Vector3 p2 = d2 * F2;
+
+        UnityEngine.Debug.DrawRay(other.position, p2, Color.black);
+        UnityEngine.Debug.DrawRay(data.position, p1, Color.black);
+        UnityEngine.Debug.LogError(p2 + " : " + p2);
+        data.veloChange += p1;
+        other.velocity = p2;
+
     }
 
 }
