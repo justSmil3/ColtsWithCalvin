@@ -15,7 +15,7 @@ public class PrototypeRope : MonoBehaviour
     public float stretchamount = 1f;
     public int accuracy = 50;
     public float gravitationMultiplyer = 1;
-    public float ropeMass = 1;
+    public float ropeMass = .25f;
     [Range(0, 10)]
     public float bounce = 2;
     public LayerMask PhysicsLayer;
@@ -34,6 +34,7 @@ public class PrototypeRope : MonoBehaviour
     {
         controlls = new PlayerControlls();
         controlls.PlayerOneControlls.InitiateRope.started += ctx => InstantiateRope(Instanciator, Target);
+        controlls.PlayerTwoControlls.InitiateRope.started += ctx => InstantiateRope(Instanciator, Target);
 
     }
 
@@ -59,13 +60,20 @@ public class PrototypeRope : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            for (int i = 0; i < segments.Length; i++)
+            if (segments.Length < 2) return;
+            for (int i = 2; i < segments.Length -2; i++)
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawSphere(segments[i].position, pointRadius);
                 Gizmos.color = Color.green;
                 Gizmos.DrawSphere(segments[i].collider.transform.position, pointRadius);
             }
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(segments[0].position, pointRadius);
+            Gizmos.DrawSphere(segments[segments.Length-1].position, pointRadius); 
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(segments[1].position, pointRadius);
+            Gizmos.DrawSphere(segments[segments.Length - 2].position, pointRadius);
         }
     }
 
@@ -84,7 +92,7 @@ public class PrototypeRope : MonoBehaviour
             //VerletSimulation();
             if (segments.Length == 0) return;
             sim();
-            ConstrainPlayerPosition();
+            //ConstrainPlayerPosition();
         }
     }
 
@@ -102,7 +110,7 @@ public class PrototypeRope : MonoBehaviour
         {
             float mmag = (rbp1.velocity - rbp2.velocity).magnitude;
             Vector3 mhat = Vector3.zero;
-            Debug.Log("mmag = " + mmag + "\n" + "body one = " + rbp1.velocity + "\n" + " body two  = " + rbp2.velocity);
+            
             if (rbp1.velocity.magnitude < rbp2.velocity.magnitude)
             {
                 mhat = (segments[1].position - rbp1.position).normalized;
@@ -143,9 +151,10 @@ public class PrototypeRope : MonoBehaviour
             {
                 Segment data = virtualSegments[i];
 
-
+                
                 Vector3 velocity = (data.position - data.prevPos) * Time.deltaTime;
-
+                velocity += data.veloChange;
+                data.veloChange = Vector3.zero;
 
                 Vector3 SpringOne = Vector3.zero, SpringTwo = Vector3.zero;
                 if (i > 0)
@@ -156,6 +165,10 @@ public class PrototypeRope : MonoBehaviour
                 {
                     SpringTwo = data.position - virtualSegments[i + 1].position;
                 }
+                if(i == 0)
+                    SpringTwo = Instanciator.transform.position - virtualSegments[i + 1].position;
+                else if( i == virtualSegments.Length -1)
+                    SpringOne = virtualSegments[i - 1].position - Target.transform.position;
 
 
 
@@ -167,13 +180,14 @@ public class PrototypeRope : MonoBehaviour
                 float pdr = Mathf.Clamp01(playerdistance / MaxPlayerDistance);
                 float pdrinv = 1 - pdr;
 
-                Vector3 fGravity = pdrinv * Physics.gravity * gravitationMultiplyer;
+                Vector3 fGravity =/* pdrinv * */Physics.gravity * gravitationMultiplyer;
 
                 Vector3 force = fSpringTwo + fGravity - fSpringOne;
 
-                velocity = velocity + force * Time.deltaTime + data.veloChange * Time.deltaTime;
-                data.velocity = velocity;
-                data.veloChange = Vector3.zero;
+                velocity = velocity + force * Time.deltaTime; // + data.veloChange * Time.deltaTime;
+                data.velocity = velocity / accuracy;
+
+                data.veloAddition = force * Time.deltaTime;
 
                 virtualSegments[i] = data;
             }
@@ -192,38 +206,33 @@ public class PrototypeRope : MonoBehaviour
                     Vector3 vy = new Vector3(0f, data.velocity.y, 0f);
                     Vector3 vz = new Vector3(0f, 0f, data.velocity.z);
                     //does not quite work yet
-                    if (!Physics.Raycast(tempPosition, vx.normalized, out RaycastHit hit, vx.magnitude * 2 + pointRadius, PhysicsLayer))
+                    if (Physics.Raycast(tempPosition, vx.normalized, out RaycastHit hit, vx.magnitude * Time.deltaTime / accuracy + pointRadius, PhysicsLayer))
                     {
-                        addedForce += vx;
-                        Debug.DrawRay(tempPosition, vx, Color.yellow);
-                    }
-                    else
-                    { 
-                        if(hit.rigidbody != null)
+                        if (hit.rigidbody != null)
                         {
                             ApplyRopeCollision(hit.rigidbody, data);
                         }
-                        Debug.DrawRay(tempPosition, vx, Color.red); 
-                    }
-                    if (!Physics.Raycast(tempPosition, vy.normalized, out RaycastHit hit2, vy.magnitude * 2 + pointRadius, PhysicsLayer))
-                    {
-                        addedForce += vy;
-                        Debug.DrawRay(tempPosition, vy, Color.green);
+                        Debug.DrawRay(tempPosition, vx, Color.red);
                     }
                     else
+                    {
+                        addedForce += vx;
+                        Debug.DrawRay(tempPosition, vx * 10, Color.yellow);
+                    }
+                    if (Physics.Raycast(tempPosition, vy.normalized, out RaycastHit hit2, vy.magnitude * Time.deltaTime / accuracy + pointRadius, PhysicsLayer))
                     {
                         if (hit2.rigidbody != null)
                         {
                             ApplyRopeCollision(hit2.rigidbody, data);
                         }
-                        Debug.DrawRay(tempPosition, vx, Color.red);
-                    }
-                    if (!Physics.Raycast(tempPosition, vz.normalized, out RaycastHit hit3, vz.magnitude * 2 + pointRadius, PhysicsLayer))
-                    {
-                        addedForce += vz;
-                        Debug.DrawRay(tempPosition, vz, Color.blue);
+                        Debug.DrawRay(tempPosition, vy.normalized * (vy.magnitude + pointRadius), Color.red);
                     }
                     else
+                    {
+                        addedForce += vy;
+                        Debug.DrawRay(tempPosition, vy * 10, Color.green);
+                    }
+                    if (Physics.Raycast(tempPosition, vz.normalized, out RaycastHit hit3, vz.magnitude * Time.deltaTime / accuracy + pointRadius, PhysicsLayer))
                     {
                         if (hit3.rigidbody != null)
                         {
@@ -231,23 +240,45 @@ public class PrototypeRope : MonoBehaviour
                         }
                         Debug.DrawRay(tempPosition, vx, Color.red);
                     }
+                    else
+                    {
+                        addedForce += vz;
+                        Debug.DrawRay(tempPosition, vz * 10, Color.blue);
+                    }
                     tempPosition += addedForce * Time.deltaTime;
-                    Rigidbody rbtemp = data.collider.GetComponent<Rigidbody>();
-                    rbtemp.velocity += (tempPosition - rbtemp.position) * Time.deltaTime;
+                    //Rigidbody rbtemp = data.collider.GetComponent<Rigidbody>();
+                    //rbtemp.velocity += (tempPosition - rbtemp.position) * Time.deltaTime;
                     data.position = tempPosition;
                 }
                 else if (i == 0)
                 {
                     Rigidbody rbtemp = data.collider.GetComponent<Rigidbody>();
-                    rbtemp.position = Instanciator.transform.position;
+                    //rbtemp.position = Instanciator.transform.position;
+                    // the time.delta time multiplication seems unnessesary but still breakes anything
+                    // take care of that
+                    Vector3 v = (data.velocity * ropeMass * Time.deltaTime) / accuracy;
+                    Instanciator.GetComponent<Rigidbody>().velocity += v;
+                    Debug.DrawRay(data.position, v * 10, Color.black);
+                    Debug.Log("Instanciator before : " + data.position);
                     data.position = Instanciator.transform.position;
+                    Debug.Log("Instanciator after : " + data.position);
+                    data.veloChange = Instanciator.GetComponent<Rigidbody>().velocity;
                 }
                 else if (i == virtualSegments.Length - 1)
                 {
                     Rigidbody rbtemp = data.collider.GetComponent<Rigidbody>();
-                    rbtemp.position = Target.transform.position;
+                    //rbtemp.position = Target.transform.position;
+                    // the time.delta time multiplication seems unnessesary but still breakes anything
+                    // take care of that
+                    Vector3 v = (data.velocity * ropeMass * Time.deltaTime) / accuracy;
+                    Target.GetComponent<Rigidbody>().velocity += v;
+                    Debug.DrawRay(data.position, v * 10, Color.black);
+                    Debug.Log("Target before : " + data.position);
                     data.position = Target.transform.position;
+                    Debug.Log("Target after : " + data.position);
+                    data.veloChange = Target.GetComponent<Rigidbody>().velocity;
                 }
+                data.collider.transform.position = data.position;
                 virtualSegments[i] = data;
             }
         }
@@ -301,7 +332,7 @@ public class PrototypeRope : MonoBehaviour
                 rb.useGravity = false;
                 rb.drag = 10 - bounce;
                 col.radius = pointRadius;
-                col.enabled = false;
+                //col.enabled = false;
                 //make a new variable for this
                 temp.layer = 8;
                 segments[i] = new Segment
@@ -318,11 +349,12 @@ public class PrototypeRope : MonoBehaviour
     //this code does not work XD 
     public void ApplyRopeCollision(Rigidbody other, Segment data)
     {
+        /*
         float dt = Time.deltaTime;
         float m1 = ropeMass;
         float m2 = other.mass;
         Vector3 v1 = data.velocity;
-        Vector3 v2 = other.velocity * dt;
+        Vector3 v2 = other.velocity;
 
         // calculate Impact
         float F1 = -m2 * v2.magnitude;
@@ -332,21 +364,19 @@ public class PrototypeRope : MonoBehaviour
         v1.Normalize();
         v2.Normalize();
 
-        float a = Vector3.Dot(v1, v2) * Vector3.Angle(v1, v2);
-        Vector3 d1 = Vector3.RotateTowards(v2, v1, a, 1);
-        Vector3 d2 = Vector3.RotateTowards(v1, v2, a, 1);
-
         //calculate new momentum
         //these somehow return a zero vector
-        Vector3 p1 = d1 * F1;
-        Vector3 p2 = d2 * F2;
+        Vector3 p1 = -v2 * F1;
+        Vector3 p2 = -v1 * F2;
 
-        UnityEngine.Debug.DrawRay(other.position, p2, Color.black);
-        UnityEngine.Debug.DrawRay(data.position, p1, Color.black);
-        UnityEngine.Debug.LogError(p2 + " : " + p2);
+        if(p2 != Vector3.zero || p1 != Vector3.zero)
+        {
+            UnityEngine.Debug.DrawRay(other.position, p2, Color.green);
+            UnityEngine.Debug.DrawRay(data.position, p1, Color.green);
+        }
         data.veloChange += p1;
         other.velocity = p2;
-
+        */
     }
 
 }

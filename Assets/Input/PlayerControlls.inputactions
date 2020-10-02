@@ -164,6 +164,17 @@
                 },
                 {
                     "name": "",
+                    "id": "3f84bca4-3336-40ff-a7e3-46bdbe206104",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "56100d89-8be6-4fd9-a15c-bc06aa803837",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",

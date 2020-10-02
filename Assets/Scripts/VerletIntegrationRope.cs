@@ -13,6 +13,7 @@ public struct Segment
     public Vector3 position;
     public Vector3 velocity;
     public Vector3 veloChange;
+    public Vector3 veloAddition;
 }
 
 public class VerletIntegrationRope : MonoBehaviour
