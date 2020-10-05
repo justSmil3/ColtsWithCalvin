@@ -41,6 +41,14 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Camera"",
+                    ""type"": ""Value"",
+                    ""id"": ""084ef7c2-1759-41f0-9f22-ae67f3b905ee"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -120,6 +128,17 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                     ""action"": ""InitiateRope"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f6b564a-dfe8-428f-bfc8-e771aa231bf4"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -148,6 +167,14 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""9a3ba6d3-9f6c-4879-9495-8d4cec675674"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Camera"",
+                    ""type"": ""Value"",
+                    ""id"": ""9ea9db44-bdee-4b48-a3ef-3325df2ef9e2"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -207,6 +234,17 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                     ""action"": ""InitiateRope"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c56bb89c-1f00-4f03-9eed-b13706d20751"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -218,11 +256,13 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
         m_PlayerOneControlls_Move = m_PlayerOneControlls.FindAction("Move", throwIfNotFound: true);
         m_PlayerOneControlls_Jump = m_PlayerOneControlls.FindAction("Jump", throwIfNotFound: true);
         m_PlayerOneControlls_InitiateRope = m_PlayerOneControlls.FindAction("InitiateRope", throwIfNotFound: true);
+        m_PlayerOneControlls_Camera = m_PlayerOneControlls.FindAction("Camera", throwIfNotFound: true);
         // PlayerTwoControlls
         m_PlayerTwoControlls = asset.FindActionMap("PlayerTwoControlls", throwIfNotFound: true);
         m_PlayerTwoControlls_Move = m_PlayerTwoControlls.FindAction("Move", throwIfNotFound: true);
         m_PlayerTwoControlls_Jump = m_PlayerTwoControlls.FindAction("Jump", throwIfNotFound: true);
         m_PlayerTwoControlls_InitiateRope = m_PlayerTwoControlls.FindAction("InitiateRope", throwIfNotFound: true);
+        m_PlayerTwoControlls_Camera = m_PlayerTwoControlls.FindAction("Camera", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -275,6 +315,7 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerOneControlls_Move;
     private readonly InputAction m_PlayerOneControlls_Jump;
     private readonly InputAction m_PlayerOneControlls_InitiateRope;
+    private readonly InputAction m_PlayerOneControlls_Camera;
     public struct PlayerOneControllsActions
     {
         private @PlayerControlls m_Wrapper;
@@ -282,6 +323,7 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_PlayerOneControlls_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerOneControlls_Jump;
         public InputAction @InitiateRope => m_Wrapper.m_PlayerOneControlls_InitiateRope;
+        public InputAction @Camera => m_Wrapper.m_PlayerOneControlls_Camera;
         public InputActionMap Get() { return m_Wrapper.m_PlayerOneControlls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -300,6 +342,9 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                 @InitiateRope.started -= m_Wrapper.m_PlayerOneControllsActionsCallbackInterface.OnInitiateRope;
                 @InitiateRope.performed -= m_Wrapper.m_PlayerOneControllsActionsCallbackInterface.OnInitiateRope;
                 @InitiateRope.canceled -= m_Wrapper.m_PlayerOneControllsActionsCallbackInterface.OnInitiateRope;
+                @Camera.started -= m_Wrapper.m_PlayerOneControllsActionsCallbackInterface.OnCamera;
+                @Camera.performed -= m_Wrapper.m_PlayerOneControllsActionsCallbackInterface.OnCamera;
+                @Camera.canceled -= m_Wrapper.m_PlayerOneControllsActionsCallbackInterface.OnCamera;
             }
             m_Wrapper.m_PlayerOneControllsActionsCallbackInterface = instance;
             if (instance != null)
@@ -313,6 +358,9 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                 @InitiateRope.started += instance.OnInitiateRope;
                 @InitiateRope.performed += instance.OnInitiateRope;
                 @InitiateRope.canceled += instance.OnInitiateRope;
+                @Camera.started += instance.OnCamera;
+                @Camera.performed += instance.OnCamera;
+                @Camera.canceled += instance.OnCamera;
             }
         }
     }
@@ -324,6 +372,7 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerTwoControlls_Move;
     private readonly InputAction m_PlayerTwoControlls_Jump;
     private readonly InputAction m_PlayerTwoControlls_InitiateRope;
+    private readonly InputAction m_PlayerTwoControlls_Camera;
     public struct PlayerTwoControllsActions
     {
         private @PlayerControlls m_Wrapper;
@@ -331,6 +380,7 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_PlayerTwoControlls_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerTwoControlls_Jump;
         public InputAction @InitiateRope => m_Wrapper.m_PlayerTwoControlls_InitiateRope;
+        public InputAction @Camera => m_Wrapper.m_PlayerTwoControlls_Camera;
         public InputActionMap Get() { return m_Wrapper.m_PlayerTwoControlls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -349,6 +399,9 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                 @InitiateRope.started -= m_Wrapper.m_PlayerTwoControllsActionsCallbackInterface.OnInitiateRope;
                 @InitiateRope.performed -= m_Wrapper.m_PlayerTwoControllsActionsCallbackInterface.OnInitiateRope;
                 @InitiateRope.canceled -= m_Wrapper.m_PlayerTwoControllsActionsCallbackInterface.OnInitiateRope;
+                @Camera.started -= m_Wrapper.m_PlayerTwoControllsActionsCallbackInterface.OnCamera;
+                @Camera.performed -= m_Wrapper.m_PlayerTwoControllsActionsCallbackInterface.OnCamera;
+                @Camera.canceled -= m_Wrapper.m_PlayerTwoControllsActionsCallbackInterface.OnCamera;
             }
             m_Wrapper.m_PlayerTwoControllsActionsCallbackInterface = instance;
             if (instance != null)
@@ -362,6 +415,9 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
                 @InitiateRope.started += instance.OnInitiateRope;
                 @InitiateRope.performed += instance.OnInitiateRope;
                 @InitiateRope.canceled += instance.OnInitiateRope;
+                @Camera.started += instance.OnCamera;
+                @Camera.performed += instance.OnCamera;
+                @Camera.canceled += instance.OnCamera;
             }
         }
     }
@@ -371,11 +427,13 @@ public class @PlayerControlls : IInputActionCollection, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnInitiateRope(InputAction.CallbackContext context);
+        void OnCamera(InputAction.CallbackContext context);
     }
     public interface IPlayerTwoControllsActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnInitiateRope(InputAction.CallbackContext context);
+        void OnCamera(InputAction.CallbackContext context);
     }
 }
