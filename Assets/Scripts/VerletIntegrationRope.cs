@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Net.Security;
 using System.Runtime.InteropServices.ComTypes;
@@ -29,20 +30,27 @@ public class VerletIntegrationRope : MonoBehaviour
 
     [SerializeField]
     private float 
-        m_segmentDistance        = 0.40f,
-        m_ropeMass               = 0.25f,
-        m_segmentCollisionRadius = 0.05f,
-        m_stiffness              = 1.50f,
-        m_gravityMultiplier      = 4.00f,
-        m_maxPlayerDistance      = 10.0f,
-        m_updateRate             = 25.0f,
-        m_friction               = 0.20f;
+        m_segmentDistance        = 00.400f,
+        m_ropeMass               = 00.250f,
+        m_segmentCollisionRadius = 00.050f,
+        m_stiffness              = 01.500f,
+        m_gravityMultiplier      = 04.000f,
+        m_maxPlayerDistance      = 10.000f,
+        m_updateRate             = 25.000f,
+        m_friction               = 00.200f,
+        m_straightRopeThrashhold = 00.005f,
+        m_directionThrashhold    = 00.200f;
+
+    [SerializeField, Range(0, 1)]
+    private float m_ropeFoldThrashhold = 0.65f;
 
     // variable for fitting the rope; 
     private float 
         m_segmentSpacing  = 0.00f,
         m_ropeLength;
 
+    private bool
+        m_isRopeStraight = false;
 
     [SerializeField]
     private LayerMask m_physicsLayer = default;
@@ -158,6 +166,23 @@ public class VerletIntegrationRope : MonoBehaviour
 
         //Calculate Velocity
 
+        // check how straight the rope is in current time
+        float dot = 0;
+        for(int i = 0; i < m_segments.Length - 1; i++)
+        {
+            float checkDot = Mathf.Abs(
+                   Vector3.Dot(m_segments[i].Collider.transform.forward,
+                               m_segments[i + 1].Collider.transform.forward));
+            if (checkDot <= m_ropeFoldThrashhold)
+                continue;
+
+            dot += Vector3.Dot(m_segments[i].Collider.transform.forward, 
+                               m_segments[i + 1].Collider.transform.up);
+        }
+        m_isRopeStraight = (Mathf.Abs(dot) <= m_straightRopeThrashhold * m_segments.Length);
+        // I thing this approach can also be used to reduce stretching in the rope middle 
+
+
         for (int r = 0; r < m_updateRate; r++)
         { 
             for (int i = 0; i < m_segments.Length; i++)
@@ -185,9 +210,6 @@ public class VerletIntegrationRope : MonoBehaviour
                 Vector3 fSpringOne  = -ks * (SpringOne.magnitude - m_segmentSpacing) * SpringOne.normalized;
                 Vector3 fSpringTwo  = -ks * (SpringTwo.magnitude - m_segmentSpacing) * SpringTwo.normalized;
                 Vector3 fGravity    =  Physics.gravity * m_ropeMass * m_gravityMultiplier;
-
-                UnityEngine.Debug.DrawRay(data.Position, Vector3.up * (fSpringTwo.y - fSpringOne.y), Color.red);
-                UnityEngine.Debug.DrawRay(data.Position, fGravity, Color.green);
 
 
                 Vector3 force       = - fSpringOne + fGravity + fSpringTwo;
@@ -246,20 +268,24 @@ public class VerletIntegrationRope : MonoBehaviour
                 {
                     data.Position += VelocitySummand;
                     data.Collider.transform.position = data.Position;
-                    continue;
+                    data.Collider.transform.forward  =
+                        (m_segments[i + 1].Position - data.Position).normalized;
+                    //continue;
                 }
+
 
                 if (i == 0)
                 {
+                    data.Collider.transform.forward =
+                        (m_segments[i + 1].Position - data.Position).normalized;
                     if (m_instanciator.TryGetComponent<Rigidbody>(out Rigidbody rBody))
                     {
-                        float normFactor = 
-                            m_segments[0].Veloctity.magnitude + 
-                            m_segments[m_segments.Length - 1].Veloctity.magnitude;
-                        if (rBody.velocity.magnitude < VelocitySummand.magnitude)
-                            rBody.velocity += 
-                                (1 - (data.Veloctity.magnitude / normFactor)) * 
-                                VelocitySummand / Time.deltaTime;
+                        float dirCheck = Vector3.Dot(
+                            rBody.velocity.normalized, 
+                            m_segments[i + 1].Collider.transform.forward);
+
+                        if (m_isRopeStraight && dirCheck < 0 - m_directionThrashhold)
+                            rBody.velocity = data.Veloctity;
                         data.Position = rBody.position;
                     }
                     //TODO here additional work has to be done
@@ -267,19 +293,26 @@ public class VerletIntegrationRope : MonoBehaviour
                 else
                 if (i == m_segments.Length - 1)
                 {
+                    data.Collider.transform.forward =
+                           (data.Position - m_segments[i - 1].Position).normalized;
                     if (m_target.TryGetComponent<Rigidbody>(out Rigidbody rBody))
                     {
-                        float normFactor =
-                            m_segments[0].Veloctity.magnitude +
-                            m_segments[m_segments.Length - 1].Veloctity.magnitude;
-                        if (rBody.velocity.magnitude < VelocitySummand.magnitude)
-                            rBody.velocity +=
-                                (1 - (data.Veloctity.magnitude / normFactor)) *
-                                VelocitySummand / Time.deltaTime;
+                        float dirCheck = Vector3.Dot(
+                            rBody.velocity.normalized,
+                            m_segments[i - 1].Collider.transform.forward);
+
+                        if (m_isRopeStraight && dirCheck > 0 + m_directionThrashhold)
+                            rBody.velocity = data.Veloctity;
                         data.Position = rBody.position;
                     }
                     //TODO here additional work has to be done
+
                 }
+
+                //Debug Drawing
+                //UnityEngine.Debug.DrawRay(data.Position, data.Collider.transform.right, Color.red);
+                //UnityEngine.Debug.DrawRay(data.Position, data.Collider.transform.up, Color.green);
+                //UnityEngine.Debug.DrawRay(data.Position, data.Collider.transform.forward, Color.blue);
             }
         }
     }
