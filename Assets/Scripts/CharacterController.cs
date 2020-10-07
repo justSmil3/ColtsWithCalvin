@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [System.Serializable]
 public enum PlayerChoise
@@ -200,6 +201,7 @@ public class CharacterController : MonoBehaviour
     {
         moveData          = Vector2.ClampMagnitude(moveData, 1f);
         AdjustVelocity();
+        AdjustRotation();
     }
 
     private Vector3 ProjectOnContactPlane (Vector3 vector)
@@ -243,6 +245,17 @@ public class CharacterController : MonoBehaviour
             Mathf.MoveTowards(m_velocity.x, desiredVelocity.x, maxSpeedChange);
         m_velocity.z    =
             Mathf.MoveTowards(m_velocity.z, desiredVelocity.z, maxSpeedChange);
+    }
+
+    private void AdjustRotation()
+    {
+        Vector3 dir = m_playerInputSpace.forward;
+        Vector3 forward = dir - Vector3.up * Vector3.Dot(dir, Vector3.up);
+        Quaternion rotation =
+            Quaternion.LookRotation(
+                forward.normalized,
+                this.transform.up.normalized);
+        this.transform.rotation = rotation;
     }
 
     private void ClearState()

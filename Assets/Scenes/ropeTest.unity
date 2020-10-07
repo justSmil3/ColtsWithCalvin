@@ -496,9 +496,13 @@ MonoBehaviour:
   m_instanciator: {fileID: 434568776}
   m_target: {fileID: 1523921637}
   m_segmentDistance: 0.4
-  m_ropeMass: 0.25
+  m_ropeMass: 1
   m_segmentCollisionRadius: 0.05
-  m_stiffness: 1.2312322e+13
+  m_stiffness: 5
+  m_gravityMultiplier: 0.1
+  m_maxPlayerDistance: 10
+  m_updateRate: 25
+  m_friction: 0.2
   m_physicsLayer:
     serializedVersion: 2
     m_Bits: 3127
@@ -2718,6 +2722,10 @@ MonoBehaviour:
   m_ropeMass: 0.25
   m_segmentCollisionRadius: 0.05
   m_stiffness: 1.5
+  m_gravityMultiplier: 4
+  m_maxPlayerDistance: 10
+  m_updateRate: 25
+  m_friction: 0.2
   m_physicsLayer:
     serializedVersion: 2
     m_Bits: 0
