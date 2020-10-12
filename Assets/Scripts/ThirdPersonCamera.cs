@@ -71,7 +71,7 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (!m_focus) return;
         controlls = new PlayerControlls();
-        CharacterController cCon = m_focus.GetComponent<CharacterController>();
+        CustomCharacterController cCon = m_focus.GetComponent<CustomCharacterController>();
         if (!cCon)    return;
         switch (cCon.p)
         {
