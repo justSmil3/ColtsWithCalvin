@@ -1,20 +1,28 @@
 ﻿using UnityEngine;
+using System;
+using System.CodeDom;
 
 public class PlayerStateMashine : MonoBehaviour
 {
-    protected IPlayerState m_currentState = null;
+    protected PlayerState m_currentState = null;
     
-    protected void SwitchState(IPlayerState _state)
+    protected void SwitchState(PlayerState _state)
     {
+    //    if (_state.GetType() == m_currentState.GetType())
+    //        return;
+
         if (m_currentState != null)
-            m_currentState.OnStateExit();
+            StartCoroutine(m_currentState.OnStateExit());
         m_currentState = _state;
-        _state.OnStateEnter();
+        StartCoroutine(_state.OnStateEnter());
     }
 
-    protected void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
-        if (m_currentState != null)
-            m_currentState.UpdateState();
+        if (m_currentState == null)
+            return;
+        StartCoroutine(m_currentState.UpdateState());
+        Debug.Log(m_currentState);
+
     }
 }

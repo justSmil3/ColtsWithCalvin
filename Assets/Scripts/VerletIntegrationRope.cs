@@ -127,7 +127,11 @@ public class VerletIntegrationRope : MonoBehaviour
         float   length  = routing.magnitude;
         m_ropeLength    = length;
 
-        if (length > m_maxPlayerDistance) return;
+        if (length > m_maxPlayerDistance) 
+            return;
+
+        if (Physics.Raycast(transform.position, dir, length, m_physicsLayer))
+            return;
 
         int numberOfSegments    = (int)(length / m_segmentDistance);
         m_segmentSpacing        = length / numberOfSegments;

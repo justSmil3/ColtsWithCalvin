@@ -73,7 +73,7 @@ public class ThirdPersonCamera : MonoBehaviour
         controlls = new PlayerControlls();
         CustomCharacterController cCon = m_focus.GetComponent<CustomCharacterController>();
         if (!cCon)    return;
-        switch (cCon.p)
+        switch (cCon.P())
         {
             case PlayerChoise.PlayerOne:
                 controlls.PlayerOneControlls.Camera.performed += 
@@ -83,7 +83,7 @@ public class ThirdPersonCamera : MonoBehaviour
                 break;
             case PlayerChoise.PlayerTwo:
                 controlls.PlayerTwoControlls.Camera.performed += 
-                    ctx => m_cameraInput = new Vector2(ctx.ReadValue<Vector2>().y, ctx.ReadValue<Vector2>().x);
+                    ctx => m_cameraInput = new Vector2(-ctx.ReadValue<Vector2>().y, ctx.ReadValue<Vector2>().x);
                 controlls.PlayerTwoControlls.Camera.canceled +=
                     ctx => m_cameraInput = Vector2.zero;
                 break;

@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 940b0de57bbc11d42bb2171b9d763984, type: 3}
+  m_Name: Data_P2
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  m_playerInputSpace: {fileID: 0}
+  fallMultiplyer: 2.5
+  lowJumpMultiplyer: 2
+  jumpForce: 10
+  m_maxSpeed: 20
+  cameraRotationSpeed: 15
+  m_fallMultiplyer: 2.5
+  m_lowJumpMultiplyer: 2
+  m_maxAcceleration: 10
+  m_maxAirAcceleration: 1
+  m_maxCliffAcceleration: 4
+  m_maxGroundAngle: 25
+  m_maxStairsAngle: 50
+  jumpHeight: 2
+  m_maxSnapSpeed: 100
+  m_probeDistance: 1
+  m_probeMask:
+    serializedVersion: 2
+    m_Bits: 7223
+  m_stairMask:
+    serializedVersion: 2
+    m_Bits: 0
+  m_cliffMask:
+    serializedVersion: 2
+    m_Bits: 4096
+  moveData: {x: 0, y: 0}
+  cameraMoveData: {x: 0, y: 0}
+  m_groundContactCount: 1
+  m_steepContactCount: 0
+  m_climpContactCount: 0
+  m_stepsSinceLastGrounded: 0
+  m_stepsSinceLastJumped: 52226
+  m_isJumpPressed: 0
+  m_isOnCliff: 0
+  m_velocity: {x: 0, y: -0.1962, z: 0}
+  m_contactNormal: {x: 0.000000087422784, y: 1, z: -0.00000017881395}
+  m_steepNormal: {x: 0, y: 0, z: 0}
+  m_climbNormal: {x: 0, y: 0, z: 0}
+  m_dirToCliff: {x: 0, y: 0, z: 0}
+  m_minGroundDotProduct: 0.90630776
+  m_minStairsDotProduct: 0.64278764
